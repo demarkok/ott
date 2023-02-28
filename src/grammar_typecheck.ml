@@ -125,7 +125,7 @@ let auxed_rule_name rr = rr.raw_rule_ntr_name ^ "_aux"
 
 let aux_rule (rr:raw_rule) ((before :string list),(after : string list), (l :loc)) : raw_rule =
   let aux_prod = 
-    { raw_prod_name = (if rr.raw_rule_pn_wrapper<>"" then rr.raw_rule_pn_wrapper else String.capitalize rr.raw_rule_ntr_name ^"_") ^ "aux";
+    { raw_prod_name = (if rr.raw_rule_pn_wrapper<>"" then rr.raw_rule_pn_wrapper else String.capitalize_ascii rr.raw_rule_ntr_name ^"_") ^ "aux";
       raw_prod_flavour = Bar;
       raw_prod_categories = [];
       raw_prod_es = 
@@ -408,7 +408,7 @@ let allowable_hom_data =
                     "nonterminal, metavar or indexvar root"));
     ( Hu_metavar , (["isa";"coq";"hol";"lem";(*"twf";*)"tex";"ocaml";"com";"coq-equality";"coq-universe";"lex";"texvar";"isavar";"holvar";"lemvar";"ocamlvar";"repr-locally-nameless";(*"repr-nominal";*)"phantom";"ocamllex";"ocamllex-remove";"ocamllex-of-string";"pp";"pp-raw";"pp-suppress"],
                     "metavar declaration"));
-    ( Hu_rule    , (["isa";"coq";"hol";"lem";(*"twf";*)"tex";"ocaml";"com";"coq-equality";"coq-universe";(*"icht";*)"icho";"ichlo";"ich";"ichl";"ic";"ch";"ih";"phantom";"aux";"auxparam";"menhir-start";"menhir-start-type";"quotient-with";"pp";"pp-raw";"pp-suppress";"pp-params"],
+    ( Hu_rule    , (["isa";"coq";"hol";"lem";(*"twf";*)"tex";"ocaml";"com";"coq-equality";"coq-universe";(*"icht";*)"icho";"ichlo";"ich";"ichl";"ic";"ch";"ih";"phantom";"aux";"auxparam";"menhir-start";"menhir-start-type";"quotient-with";"pp";"pp-raw";"pp-suppress";"pp-params";"lex-comment"],
                     "rule"));
     ( Hu_rule_meta, (["com"], "special rule"));
     ( Hu_prod    , (["isa";"coq";"hol";"lem";(*"twf";*)"tex";"texlong";"ocaml";"com";"order";"isasyn";"isaprec";(*"icht";*)"icho";"ichlo";"ich";"ichl";"ic";"ch";"ih";

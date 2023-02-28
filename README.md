@@ -62,7 +62,7 @@ As of 2020, Ott remains in continuous use.
   (html)](http://www.cl.cam.ac.uk/~pes20/ott/top2.html)
 
 - [Binding and
-  Substitution](http://www.cl.cam.ac.uk/users/pes20/bind-doc.pdf). Susmit
+  Substitution](http://www.cl.cam.ac.uk/users/pes20/ott/bind-doc.pdf). Susmit
   Sarkar, Peter Sewell, Francesco Zappa Nardelli.  Note, 2007.
 
 - [The experimental Coq locally-nameless backend
@@ -72,20 +72,20 @@ As of 2020, Ott remains in continuous use.
 ## Papers
 
 - [Ott: Effective Tool Support for the Working
-  Semanticist](http://www.cl.cam.ac.uk/users/pes20/ott-jfp.pdf).
+  Semanticist](http://www.cl.cam.ac.uk/users/pes20/ott/ott-jfp.pdf).
   Peter Sewell, Francesco Zappa Nardelli, Scott Owens, Gilles Peskine,
   Thomas Ridge, Susmit Sarkar, Rok Strnisa. [Journal of
   Functional Programming 20(1):71-122,
   2010](http://journals.cambridge.org/repo_A71Keeig)
 
 - [Ott: Effective Tool Support for the Working
-  Semanticist](http://www.cl.cam.ac.uk/users/pes20/paper.pdf).  Peter
+  Semanticist](http://www.cl.cam.ac.uk/users/pes20/ott/paper.pdf).  Peter
   Sewell, Francesco Zappa Nardelli, Scott Owens, Gilles Peskine,
   Thomas Ridge, Susmit Sarkar, Rok Strnisa.  In [ICFP
   2007](http://www.informatik.uni-bonn.de/%7Eralf/icfp07.html)
 
 - [Ott or
-  Nott](http://www.cl.cam.ac.uk/users/pes20/wmm2010.pdf). Stephanie
+  Nott](http://www.cl.cam.ac.uk/users/pes20/ott/wmm2010.pdf). Stephanie
   Weirich, Scott Owens, Peter Sewell, Francesco Zappa Nardelli. In
   [WMM 2010](http://www.cis.upenn.edu/~bcpierce/wmm/): 5th ACM SIGPLAN
   Workshop on Mechanizing Metatheory.
@@ -94,7 +94,7 @@ As of 2020, Ott remains in continuous use.
 
 ## People
 
-Ott has been principally devloped by 
+Ott has been principally developed by
 <a href="http://www.cl.cam.ac.uk/~pes20">Peter Sewell</a>, 
 <a href="http://moscova.inria.fr/~zappa">Francesco Zappa Nardelli</a>, and
 <a href="http://www.cl.cam.ac.uk/~so294">Scott Owens</a>,
@@ -152,8 +152,8 @@ To rebuild and reinstall after local changes, run `opam upgrade --working-dir ot
 
 ### Without OPAM
 
-Ott depends on OCaml version 4.00.0 or later. It builds with (at
-least) OCaml 4.02.3 and 4.10.0. 
+Ott depends on OCaml version 4.07.0 or later and the ocamlgraph package. It
+builds with (at least) OCaml 4.07.0 and 4.14.0, and ocamlgraph 1.8.8. 
 
 The command `make` (`make world`) builds the `ott` binary in the `bin/` subdirectory.
 

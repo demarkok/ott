@@ -78,7 +78,7 @@ let pp_subntr (m: pp_mode) (xd: syntaxdefn): (nontermroot * nontermroot * nonter
       let s = 
 	Auxl.pp_is ntrl ntru ^ " " 
 	^ Auxl.hide_isa_trailing_underscore m
-	    (( match m with Twf _ -> String.uppercase ntr' 
+	    (( match m with Twf _ -> String.uppercase_ascii ntr' 
 	    | Coq _ | Isa _ | Hol _ | Lem _ -> ntr'
 	    | Caml _ | Tex _ | Ascii _ | Lex _ | Menhir _ -> raise Auxl.ThisCannotHappen )
 	     ^ Grammar_pp.pp_suffix_with_sie m xd Bounds.sie_project suff)
@@ -481,9 +481,6 @@ let pp_defn fd (m:pp_mode) (xd:syntaxdefn) lookup (defnclass_wrapper:string) (un
       output_string fd "\n\n"
   | Isa io ->
       Printf.fprintf fd "(* defn %s *)\n\n" d.d_name;
-      ( match (Grammar_pp.isa_fancy_syntax_clause_for_defn m xd io "foo" defnclass_wrapper d) with
-        | None -> ()
-	| Some _ -> output_string fd "| " );
       iter_sep (pp_processed_semiraw_rule fd m xd) "\n| " d.d_rules
   | Hol _ ->
       Printf.fprintf fd "(* defn %s *)\n\n" d.d_name;
@@ -595,7 +592,8 @@ let pp_defnclass fd (m:pp_mode) (xd:syntaxdefn) lookup (dc:defnclass) =
       output_string fd "\nwhere\n";
       ( match fancy_syntax_clauses with
         | [] -> ()
-        | fscs -> iter_asep fd "\n| "  (*List.iter*) (fun x -> output_string fd (snd x)) fscs);
+        | fscs -> iter_asep fd "\n| "  (*List.iter*) (fun x -> output_string fd (snd x)) fscs;
+                  output_string fd "\n\n| ");
       iter_asep fd "\n| " (fun d -> pp_defn fd m xd lookup dc.dc_wrapper universe d) dc.dc_defns
 
   | Hol ho -> 
@@ -1020,11 +1018,11 @@ let process_semiraw_rule (m: pp_mode) (xd: syntaxdefn) (lookup: made_parser)
 
         let rule_name_parse s =
           let is_letter c =
-            let cc = Char.code (Char.lowercase c) in
+            let cc = Char.code (Char.lowercase_ascii c) in
             cc >= 97 && cc <= 122 in
           
           let is_num_or_letter c =
-            let cc = Char.code (Char.lowercase c) in
+            let cc = Char.code (Char.lowercase_ascii c) in
             (cc >= 97 && cc <= 122) || (cc >= 48 && cc <= 57) in
           
           let is_space c =
