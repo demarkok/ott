@@ -553,6 +553,15 @@ let pp_systemdefn_core_tex m sd lookup oi =
             (if xo.ppt_colour then output_string fd "\\usepackage{color}\n")
         | pre_wrap -> Embed_pp.pp_embeds fd m sd.syntax lookup pre_wrap
       end;
+      let ruleLabelCommand = "\\usepackage{hyperref}\n\
+            \\makeatletter\n\
+            \\NewDocumentCommand \\ruleLabel { m m }{%\n\
+              \\def\\@currentlabelname{#1}%\n\
+              \\phantomsection\n\
+              \\label{#2}%\n\
+            }%%\n\
+            \\makeatother\n"
+      in output_string fd ruleLabelCommand;
       Printf.fprintf fd ("\\newcommand{%s}[4][]{{\\displaystyle\\frac{\\begin{array}{l}#2\\end{array}}{#3}\\quad%s{#4}}}\n")
         (Grammar_pp.pp_tex_DRULE_NAME m) (Grammar_pp.pp_tex_DRULE_NAME_NAME m);
       Printf.fprintf fd ("\\newcommand{%s}[1]{\\[#1\\]}\n") (Grammar_pp.pp_tex_USE_DRULE_NAME m);
