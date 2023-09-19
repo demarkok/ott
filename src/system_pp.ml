@@ -556,7 +556,7 @@ let pp_systemdefn_core_tex m sd lookup oi =
       let ruleLabelCommand = "\\usepackage{hyperref}\n\
             \\makeatletter\n\
             \\NewDocumentCommand \\ruleLabel { m m }{%\n\
-              \\def\\@currentlabelname{#1}%\n\
+              \\def\\@currentlabelname{\ottdrulename{#1}}%\n\
               \\phantomsection\n\
               \\label{#2}%\n\
             }%%\n\
