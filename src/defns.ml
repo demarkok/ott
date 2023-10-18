@@ -233,14 +233,16 @@ let pp_drule fd (m:pp_mode) (xd:syntaxdefn) (dr:drule) : unit =
             "\\text{"
             ^ String.concat "" (Grammar_pp.apply_hom_spec m xd hs [])
             ^ "}") in
+      let tex_command_name = Grammar_pp.tex_drule_name m dr.drule_name in 
+      let label_name = Auxl.pp_tex_escape dr.drule_name in
       Printf.fprintf fd "\\newcommand{%sName}[0]{%s}\n"
-        (Grammar_pp.tex_drule_name m dr.drule_name)
-        (Auxl.pp_tex_escape dr.drule_name);
+        tex_command_name
+        label_name;
       Printf.fprintf fd "\\newcommand{%sLabel}[0]{%s}\n"
-        (Grammar_pp.tex_drule_name m dr.drule_name)
-        (Auxl.pp_tex_escape dr.drule_name);
+        tex_command_name
+        label_name;
       Printf.fprintf fd "\\newcommand{%s}[1]{%s[#1]{%%\n"
-        (Grammar_pp.tex_drule_name m dr.drule_name)
+        tex_command_name
         (Grammar_pp.pp_tex_DRULE_NAME m);
       List.iter
         (fun p-> Printf.fprintf fd "%s{%s}%%\n" (Grammar_pp.pp_tex_PREMISE_NAME m) p)
@@ -248,10 +250,10 @@ let pp_drule fd (m:pp_mode) (xd:syntaxdefn) (dr:drule) : unit =
       output_string fd "}{\n";
       output_string fd ppd_conclusion;
       Printf.fprintf fd "}{%%\n{%sName}{%s}%%\n} \\ruleLabel{%sName}{%sLabel} }\n"
-        (Grammar_pp.tex_drule_name m dr.drule_name)
+        tex_command_name
         pp_com
-        (Grammar_pp.tex_drule_name m dr.drule_name)
-        (Grammar_pp.tex_drule_name m dr.drule_name)
+        tex_command_name
+        tex_command_name
   | Isa _ | Hol _ | Lem _ | Coq _ | Twf _ ->
       let non_free_ntrs = Subrules_pp.non_free_ntrs m xd xd.xd_srs in
 
