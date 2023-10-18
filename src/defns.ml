@@ -234,13 +234,14 @@ let pp_drule fd (m:pp_mode) (xd:syntaxdefn) (dr:drule) : unit =
             ^ String.concat "" (Grammar_pp.apply_hom_spec m xd hs [])
             ^ "}") in
       let tex_command_name = Grammar_pp.tex_drule_name m dr.drule_name in 
-      let label_name = Auxl.pp_tex_escape dr.drule_name in
+      let tex_label = Grammar_pp.tex_command_escape dr.drule_name in
+      let rule_name = Auxl.pp_tex_escape dr.drule_name in
       Printf.fprintf fd "\\newcommand{%sName}[0]{%s}\n"
         tex_command_name
-        label_name;
+        rule_name;
       Printf.fprintf fd "\\newcommand{%sLabel}[0]{%s}\n"
         tex_command_name
-        label_name;
+        tex_label;
       Printf.fprintf fd "\\newcommand{%s}[1]{%s[#1]{%%\n"
         tex_command_name
         (Grammar_pp.pp_tex_DRULE_NAME m);
