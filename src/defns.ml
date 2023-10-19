@@ -544,6 +544,27 @@ let pp_defn fd (m:pp_mode) (xd:syntaxdefn) lookup (defnclass_wrapper:string) (un
             output_string fd "}\n"
         | PSR_Defncom es -> Embed_pp.pp_embed_spec fd m xd lookup es)
         d.d_rules;
+      Printf.fprintf fd "\\end{%s}}\n\n" (Grammar_pp.pp_tex_DEFN_BLOCK_NAME m);
+      Printf.fprintf fd "\n\\newcommand{%sLabeled}[1]{\\begin{%s}[#1]{$%s$}{%s}\n"
+        (Grammar_pp.tex_defn_name m defnclass_wrapper d.d_name)
+        (Grammar_pp.pp_tex_DEFN_BLOCK_NAME m)
+        (Grammar_pp.pp_symterm m xd [] de_empty d.d_form)
+        pp_com;
+      List.iter (function
+        | PSR_Rule dr -> 
+            Printf.fprintf fd "%s{%sLabeled{}"
+              (Grammar_pp.pp_tex_USE_DRULE_NAME m)
+              (Grammar_pp.tex_drule_name m dr.drule_name);
+            if (xo.ppt_show_categories &&
+               not (StringSet.is_empty dr.drule_categories)) then begin
+              output_string fd "\\quad\\textsf{[";
+              StringSet.iter (fun x -> output_string fd x; output_string fd " ")
+                dr.drule_categories;
+              output_string fd "]}"
+            end;
+            output_string fd "}\n"
+        | PSR_Defncom es -> Embed_pp.pp_embed_spec fd m xd lookup es)
+        d.d_rules;
       Printf.fprintf fd "\\end{%s}}\n\n" (Grammar_pp.pp_tex_DEFN_BLOCK_NAME m)
   | Caml _ | Lex _ | Menhir _ -> Auxl.errorm m "pp_defn"
 
