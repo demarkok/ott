@@ -242,7 +242,7 @@ let pp_drule fd (m:pp_mode) (xd:syntaxdefn) (dr:drule) : unit =
       Printf.fprintf fd "\\newcommand{%sLabel}[0]{%s}\n"
         tex_command_name
         tex_label;
-      Printf.fprintf fd "\\newcommand{%sUnlabeled}[1]{%s[#1]{%%\n"
+      Printf.fprintf fd "\\newcommand{%s}[1]{%s[#1]{%%\n"
         tex_command_name
         (Grammar_pp.pp_tex_DRULE_NAME m);
       List.iter
@@ -253,7 +253,7 @@ let pp_drule fd (m:pp_mode) (xd:syntaxdefn) (dr:drule) : unit =
       Printf.fprintf fd "}{%%\n{%sName}{%s}%%\n}}\n"
         tex_command_name
         pp_com;
-      Printf.fprintf fd "\\newcommand{%s}[1]{%sUnlabeled{#1}%%\n  \
+      Printf.fprintf fd "\\newcommand{%sLabeled}[1]{%s{#1}%%\n  \
             \\ruleLabel{%sName}{%sLabel}\n}\n"
         tex_command_name
         tex_command_name
