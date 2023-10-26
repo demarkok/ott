@@ -233,25 +233,32 @@ let pp_drule fd (m:pp_mode) (xd:syntaxdefn) (dr:drule) : unit =
             "\\text{"
             ^ String.concat "" (Grammar_pp.apply_hom_spec m xd hs [])
             ^ "}") in
+      let tex_command_name = Grammar_pp.tex_drule_name m dr.drule_name in 
+      let tex_label = Grammar_pp.tex_command_escape dr.drule_name in
+      let rule_name = Auxl.pp_tex_escape dr.drule_name in
       Printf.fprintf fd "\\newcommand{%sName}[0]{%s}\n"
-        (Grammar_pp.tex_drule_name m dr.drule_name)
-        (Auxl.pp_tex_escape dr.drule_name);
+        tex_command_name
+        rule_name;
       Printf.fprintf fd "\\newcommand{%sLabel}[0]{%s}\n"
-        (Grammar_pp.tex_drule_name m dr.drule_name)
-        (Auxl.pp_tex_escape dr.drule_name);
+        tex_command_name
+        tex_label;
       Printf.fprintf fd "\\newcommand{%s}[1]{%s[#1]{%%\n"
-        (Grammar_pp.tex_drule_name m dr.drule_name)
+        tex_command_name
         (Grammar_pp.pp_tex_DRULE_NAME m);
       List.iter
         (fun p-> Printf.fprintf fd "%s{%s}%%\n" (Grammar_pp.pp_tex_PREMISE_NAME m) p)
         (snd ppd_premises);
       output_string fd "}{\n";
       output_string fd ppd_conclusion;
-      Printf.fprintf fd "}{%%\n{%sName}{%s}%%\n} \\ruleLabel{%sName}{%sLabel} }\n"
-        (Grammar_pp.tex_drule_name m dr.drule_name)
-        pp_com
-        (Grammar_pp.tex_drule_name m dr.drule_name)
-        (Grammar_pp.tex_drule_name m dr.drule_name)
+      Printf.fprintf fd "}{%%\n{%sName}{%s}%%\n}}\n"
+        tex_command_name
+        pp_com;
+      Printf.fprintf fd "\\newcommand{%sLabeled}[1]{%s{#1}%%\n  \
+            \\ruleLabel{%sName}{%sLabel}\n}\n"
+        tex_command_name
+        tex_command_name
+        tex_command_name
+        tex_command_name;
   | Isa _ | Hol _ | Lem _ | Coq _ | Twf _ ->
       let non_free_ntrs = Subrules_pp.non_free_ntrs m xd xd.xd_srs in
 
@@ -525,6 +532,27 @@ let pp_defn fd (m:pp_mode) (xd:syntaxdefn) lookup (defnclass_wrapper:string) (un
       List.iter (function
         | PSR_Rule dr -> 
             Printf.fprintf fd "%s{%s{}"
+              (Grammar_pp.pp_tex_USE_DRULE_NAME m)
+              (Grammar_pp.tex_drule_name m dr.drule_name);
+            if (xo.ppt_show_categories &&
+               not (StringSet.is_empty dr.drule_categories)) then begin
+              output_string fd "\\quad\\textsf{[";
+              StringSet.iter (fun x -> output_string fd x; output_string fd " ")
+                dr.drule_categories;
+              output_string fd "]}"
+            end;
+            output_string fd "}\n"
+        | PSR_Defncom es -> Embed_pp.pp_embed_spec fd m xd lookup es)
+        d.d_rules;
+      Printf.fprintf fd "\\end{%s}}\n\n" (Grammar_pp.pp_tex_DEFN_BLOCK_NAME m);
+      Printf.fprintf fd "\n\\newcommand{%sLabeled}[1]{\\begin{%s}[#1]{$%s$}{%s}\n"
+        (Grammar_pp.tex_defn_name m defnclass_wrapper d.d_name)
+        (Grammar_pp.pp_tex_DEFN_BLOCK_NAME m)
+        (Grammar_pp.pp_symterm m xd [] de_empty d.d_form)
+        pp_com;
+      List.iter (function
+        | PSR_Rule dr -> 
+            Printf.fprintf fd "%s{%sLabeled{}"
               (Grammar_pp.pp_tex_USE_DRULE_NAME m)
               (Grammar_pp.tex_drule_name m dr.drule_name);
             if (xo.ppt_show_categories &&
