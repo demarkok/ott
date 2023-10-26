@@ -524,10 +524,16 @@ let pp_defn fd (m:pp_mode) (xd:syntaxdefn) lookup (defnclass_wrapper:string) (un
       let pp_com = Grammar_pp.pp_com_es m xd d.d_homs es  in
       Printf.fprintf fd "%%%% defn %s\n" d.d_name;
       iter_sep (pp_processed_semiraw_rule fd m xd) "\n\n" d.d_rules;
-      Printf.fprintf fd "\n\\newcommand{%s}[1]{\\begin{%s}[#1]{$%s$}{%s}\n"
+
+      let header_name = (Grammar_pp.tex_defn_header_name m defnclass_wrapper d.d_name) in
+      Printf.fprintf fd "\n\\newcommand{%s}[0]{$%s$}\n"
+        header_name
+        (Grammar_pp.pp_symterm m xd [] de_empty d.d_form);
+
+      Printf.fprintf fd "\n\\newcommand{%s}[1]{\\begin{%s}[#1]{%s}{%s}\n"
         (Grammar_pp.tex_defn_name m defnclass_wrapper d.d_name)
         (Grammar_pp.pp_tex_DEFN_BLOCK_NAME m)
-        (Grammar_pp.pp_symterm m xd [] de_empty d.d_form)
+        header_name
         pp_com;
       List.iter (function
         | PSR_Rule dr -> 
@@ -545,10 +551,10 @@ let pp_defn fd (m:pp_mode) (xd:syntaxdefn) lookup (defnclass_wrapper:string) (un
         | PSR_Defncom es -> Embed_pp.pp_embed_spec fd m xd lookup es)
         d.d_rules;
       Printf.fprintf fd "\\end{%s}}\n\n" (Grammar_pp.pp_tex_DEFN_BLOCK_NAME m);
-      Printf.fprintf fd "\n\\newcommand{%sLabeled}[1]{\\begin{%s}[#1]{$%s$}{%s}\n"
+      Printf.fprintf fd "\n\\newcommand{%sLabeled}[1]{\\begin{%s}[#1]{%s}{%s}\n"
         (Grammar_pp.tex_defn_name m defnclass_wrapper d.d_name)
         (Grammar_pp.pp_tex_DEFN_BLOCK_NAME m)
-        (Grammar_pp.pp_symterm m xd [] de_empty d.d_form)
+        header_name
         pp_com;
       List.iter (function
         | PSR_Rule dr -> 
