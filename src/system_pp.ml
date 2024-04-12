@@ -587,6 +587,7 @@ let pp_systemdefn_core_tex m sd lookup oi =
       (* {prod_flavour}{prodnames}{meta}{bindspec}{othercategories}{com} *)
       Printf.fprintf fd ("\\newcommand{%s}[3]{$#1$ & & $#2$ & & & \\multicolumn{2}{l}{#3}}\n") (Grammar_pp.pp_tex_RULEHEAD_NAME m );
       Printf.fprintf fd ("\\newcommand{%s}[6]{& & $#1$ & $#2$ & $#3 #4$ & $#5$ & $#6$}\n") (Grammar_pp.pp_tex_PROD_NAME m );
+      Printf.fprintf fd ("\\newcommand{%s}[4]{\\multicolumn{3}{l}{#1} \\\\ $#2$ &$#3$& $#4$}\n") (Grammar_pp.pp_tex_PROD_INLINE_NAME m );
       Printf.fprintf fd ("\\newcommand{%s}[6]{%s{#1}{#2}{#3}{#4}{#5}{#6}}\n")
         (Grammar_pp.pp_tex_FIRST_PROD_NAME m ) (Grammar_pp.pp_tex_PROD_NAME m);
       Printf.fprintf fd ("\\newcommand{%s}[2]{& & $#1$ & \\multicolumn{4}{l}{$#2$}}\n") (Grammar_pp.pp_tex_LONG_PROD_NAME m );

@@ -774,6 +774,8 @@ let pp_tex_PROD_NEWLINE_NAME m        = "\\"^pp_tex_NAME_PREFIX m^"prodnewline"
 let pp_tex_INTERRULE_NAME m        = "\\"^pp_tex_NAME_PREFIX m^"interrule"
 let pp_tex_AFTERLASTRULE_NAME m        = "\\"^pp_tex_NAME_PREFIX m^"afterlastrule"
 
+let pp_tex_PROD_INLINE_NAME m        = "\\"^pp_tex_NAME_PREFIX m^"prodinline"
+
 let pp_tex_BEGIN_RULES m      = "\\"^pp_tex_NAME_PREFIX m^"grammartabular{\n" 
 let pp_tex_END_RULES          = "}"
 
@@ -2438,6 +2440,26 @@ and apply_hom_order m xd p = (* returns an p.prod_es sorted according to the ord
     List.map (fun i -> List.nth pf i) ohi
   with Not_found -> p.prod_es
 
+and pp_prod_tex_inline m xd rnn rpw p =
+  let pp_com = pp_com_es m xd p.prod_homs p.prod_es in
+  match m with 
+  | Tex xo -> 
+      let suppressed_category = 
+        StringSet.exists (fun x -> List.mem x xo.ppt_suppressed_categories)
+          p.prod_categories in
+      if suppressed_category || (not(xo.ppt_show_meta) && p.prod_meta && not(p.prod_sugar)) then 
+        None
+      else
+        Some
+          (let pp_prod =
+            let stnb = canonical_symterm_node_body_of_prod rnn p in
+            let st = St_node(dummy_loc,stnb) in
+            pp_symterm m xd [] de_empty st 
+          in
+          "{"^pp_prod^"}")
+ | _ -> None
+
+
 and pp_prod m xd rnn rpw p = (* returns a string option *)
   let pp_com = pp_com_es m xd p.prod_homs p.prod_es in
   match m with 
@@ -2671,23 +2693,37 @@ and pp_rule m xd r = (* returns a string option *)
       else
         Some
 (* TODO: update the following to respect pp_tex_LONG_PROD_NAME (if necessary...) *)
-          (Str.replace_first 
+          ((Str.replace_first 
              (Str.regexp_string (pp_tex_PROD_NAME m))  
              (pp_tex_FIRST_PROD_NAME m) 
              ( "\\newcommand{"
                ^ tex_rule_name m r.rule_ntr_name
                ^ "}{\n"
-	       ^ (String.concat (pp_tex_PROD_NEWLINE_NAME m^"\n") 
-                    ( ( pp_tex_RULEHEAD_NAME m^"{"
+	       ^ (String.concat (pp_tex_PROD_NEWLINE_NAME m^"\n") ( 
+                  ( pp_tex_RULEHEAD_NAME m^"{"
 	                ^ String.concat  "  ,\\ "
 	                    (Auxl.remove_duplicates (List.map (function ntr,homs->pp_nontermroot m xd ntr) r.rule_ntr_names))
-	                ^ "}{::=}{" ^ pp_com ^ "}")
-                      ::
+	                ^ "}{\\Coloneqq}{" ^ pp_com ^ "}")
+                  ::
 	                (Auxl.option_map 
                            (pp_prod m xd r.rule_ntr_name r.rule_pn_wrapper)
                            r.rule_ps)))
 (*            ^"[5.0mm]" *)
 	       ^ "}\n"  ))
+         ^ ("\n" ^ "\\newcommand{" ^ tex_rule_name m r.rule_ntr_name ^ "Inline}{"
+            ^  (pp_tex_PROD_INLINE_NAME m)
+            ^ "{" ^ pp_com ^ "}"
+            ^ "{" 
+            ^ String.concat  "  ,\\ " 
+              (Auxl.remove_duplicates (List.map (function ntr,homs->pp_nontermroot m xd ntr) r.rule_ntr_names))
+            ^ "}"
+            ^ "{\\Coloneqq}" 
+            ^ "{" 
+            ^ (String.concat " \\mid " 
+              (Auxl.option_map 
+                    (pp_prod_tex_inline m xd r.rule_ntr_name r.rule_pn_wrapper)
+                    r.rule_ps))
+            ^ "}}\n"))
   in 
   match result with
   | Some s -> Some (if !Global_option.output_source_locations >= 2 then "\n"^pp_source_location m r.rule_loc  ^ s else s)
