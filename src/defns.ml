@@ -253,8 +253,8 @@ let pp_drule fd (m:pp_mode) (xd:syntaxdefn) (dr:drule) : unit =
       Printf.fprintf fd "}{%%\n{%sName}{%s}%%\n}}\n"
         tex_command_name
         pp_com;
-      Printf.fprintf fd "\\newcommand{%sLabeled}[1]{%s{#1}%%\n  \
-            \\ruleLabel{%sName}{%sLabel}\n}\n"
+      Printf.fprintf fd "\\newcommand{%sLabeled}[2][]{%s{#2}%%\n  \
+            \\ruleLabel{%sName}{#1%sLabel}\n}\n"
         tex_command_name
         tex_command_name
         tex_command_name
@@ -551,14 +551,14 @@ let pp_defn fd (m:pp_mode) (xd:syntaxdefn) lookup (defnclass_wrapper:string) (un
         | PSR_Defncom es -> Embed_pp.pp_embed_spec fd m xd lookup es)
         d.d_rules;
       Printf.fprintf fd "\\end{%s}}\n\n" (Grammar_pp.pp_tex_DEFN_BLOCK_NAME m);
-      Printf.fprintf fd "\n\\newcommand{%sLabeled}[1]{\\begin{%s}[#1]{%s}{%s}\n"
+      Printf.fprintf fd "\n\\newcommand{%sLabeled}[2][]{\\begin{%s}[#2]{%s}{%s}\n"
         (Grammar_pp.tex_defn_name m defnclass_wrapper d.d_name)
         (Grammar_pp.pp_tex_DEFN_BLOCK_NAME m)
         header_name
         pp_com;
       List.iter (function
         | PSR_Rule dr -> 
-            Printf.fprintf fd "%s{%sLabeled{}"
+            Printf.fprintf fd "%s{%sLabeled[#1]{}"
               (Grammar_pp.pp_tex_USE_DRULE_NAME m)
               (Grammar_pp.tex_drule_name m dr.drule_name);
             if (xo.ppt_show_categories &&
