@@ -1,8 +1,8 @@
 opam-version: "2.0"
-version: "0.33"
+version: "dev"
 maintainer: "Thibaut Pérami <Thibaut.Perami@cl.cam.ac.uk>"
 authors: ["Peter Sewell" "Francesco Zappa Nardelli" "Scott Owens"]
-license: ["BSD-3-Clause" "LGPL-2.1-only"]
+license: "BSD-3-Clause"
 homepage: "http://www.cl.cam.ac.uk/~pes20/ott/"
 bug-reports: "https://github.com/ott-lang/ott/issues"
 depends: [
@@ -16,6 +16,9 @@ depends: [
 build: [
   [make "world"] { ocaml:native }
   [make "world.byt"] { !ocaml:native }
+  ["rm" "src/ott"] {os = "win32"}
+  ["cp" "src/ott.opt" "src/ott"] {os = "win32" & ocaml:native}
+  ["cp" "src/ott.byte" "src/ott"] {os = "win32" & !ocaml:native}
   [make "ott.install"]
 ]
 run-test: [
